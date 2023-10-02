@@ -2,12 +2,16 @@
 {% block title%}Login{% endblock%}
 {% load crispy_forms_tags %}
 {% block content%}
+
+<div class="card mt-3" style="width: 38rem;">
+  <div class="card-body">  
 <form method="post">
-  
 {% csrf_token %}
 {{ form|crispy }}
   <p>Dont' have an account ? Create one.. <a href="/sign-up">Sign up here</a> </p>
   <button type="submit" class="btn btn-outline-info" >Login</button>
 </form>
+<!-- <p>Forgot Password?<a href="/password_reset.html">Reset Password</a></p> -->
 {% endblock %}
-
+  </div>
+</div>

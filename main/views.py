@@ -1,18 +1,46 @@
 from django.shortcuts import render, redirect
 from .forms import RegisterForm, PostForm
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.models import User, Group
 from .models import Post
 
 
 @login_required(login_url="/login")
 def home(request):
     posts = Post.objects.all()
+
+    if request.method == "POST":
+        post_id = request.POST.get("post-id")
+        user_id = request.POST.get("user-id")
+
+        if post_id:
+            post = Post.objects.filter(id=post_id).first()
+            if post and post.author == request.user or request.user.has_perm("main.delete_post"):
+                post.delete()
+        elif user_id:
+            user = User.objects.filter(id=user_id).first()
+            if user and request.user.is_staff:
+                try:
+                    group = Group.objects.get(name='default')
+                    group.user_set.remove(user)
+                except:
+                    pass
+
+                try:    
+                    group = Group.objects.get(name='mod')
+                    group.user_set.remove(user)
+                except:
+                    pass
+                
+
+
     context = {"posts": posts}
     return render(request, 'main/home.html', context )
 
 
 @login_required(login_url="/login")
+@permission_required("main.add_post", login_url="/login", raise_exception=True)
 def create_post(request):
     if request.method == 'POST':
         form = PostForm(request.POST)
@@ -45,3 +73,7 @@ def sign_up(request):
 def pass_reset(request):
     # context = {"form": form}
     return render(request, 'password_reset.html')
+
+
+def profile(request):
+    return render(request, 'main/profile.html')

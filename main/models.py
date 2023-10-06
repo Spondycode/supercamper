@@ -24,8 +24,8 @@ class Profile(models.Model):
 
     name = models.ForeignKey(User, on_delete=models.CASCADE)
     nationality = models.CharField(max_length=150)
-    camper_type = models.CharField(max_length=15, choices=CampTypes.choices)
-    image = models.ImageField(upload_to='uploads/profile_pics/')
+    camper_type = models.CharField(max_length=15, choices=CampTypes.choices, blank=True, null=True)
+    image = models.ImageField(upload_to='uploads/profile_pics/', blank=True, null=True)
     favourite = models.CharField(max_length=200)
 
     def __str__(self):

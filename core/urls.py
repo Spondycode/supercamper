@@ -9,4 +9,5 @@ urlpatterns = [
     path('', include('main.urls')),
     path('', include('django.contrib.auth.urls')),
 
+    path('store/', include('store.urls')),
 ]
